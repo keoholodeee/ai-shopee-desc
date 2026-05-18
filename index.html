@@ -400,11 +400,24 @@ async function extractFromLink(){
     try{
         const prompt=`Phân tích sản phẩm từ link Shopee/TikTok Shop:\nURL: ${url}\n${extractedName?'Tên (từ URL): '+extractedName:''}\n${pageContent?'Nội dung trang:\n'+pageContent:''}\n\nTrích xuất và trả về JSON:\n{"name":"tên SP","category":"danh mục","price":"giá","features":"đặc điểm","target":"đối tượng"}\nCategory values: thoi-trang-nam/thoi-trang-nu/giay-dep/tui-xach/my-pham/do-gia-dung/do-dien-tu/do-an/do-choi/sach-van-phong/the-thao/me-be/khac\nChỉ trả JSON, không giải thích.`;
         const result=await callAI(prompt);
-        let info;
-        try{
-            const jsonMatch=result.match(/\{[\s\S]*\}/);
-            info=JSON.parse(jsonMatch?jsonMatch[0]:result);
-        }catch{throw new Error('AI không trả JSON hợp lệ. Thử nhập thủ công.');}
+       // Parse JSON - handle markdown code blocks and extra text
+       let info;
+       try{
+           let cleaned=result;
+           // Remove markdown code blocks: ```json ... ``` or ``` ... ```
+           cleaned=cleaned.replace(/```(?:json)?\s*\n?/gi,'').replace(/```\s*/g,'');
+           // Try to find JSON object
+           const jsonMatch=cleaned.match(/\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}/);
+           if(jsonMatch){
+               info=JSON.parse(jsonMatch[0]);
+           }else{
+               // Last resort: try parsing entire cleaned response
+               info=JSON.parse(cleaned.trim());
+           }
+       }catch(e){
+           console.error('Parse error:',e,'Raw:',result);
+           throw new Error('AI trả về: '+result.substring(0,150)+'...');
+       }
         if(info.name)document.getElementById('productName').value=info.name;
         if(info.category){const c=document.getElementById('category');if([...c.options].find(o=>o.value===info.category))c.value=info.category;}
         if(info.price)document.getElementById('price').value=info.price;
