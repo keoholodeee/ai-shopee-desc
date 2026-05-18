@@ -157,7 +157,6 @@
             <div class="platform-tab-icon">🎵</div>
             TikTok Shop
         </div>
-        </div>
     </div>
     <!-- INPUT MODE -->
     <div class="input-mode-tabs">
@@ -316,6 +315,7 @@
                 <option value="openai">OpenAI (GPT-4o-mini)</option>
                 <option value="gemini">Google Gemini</option>
                 <option value="mimo">Xiaomi MiMo</option>
+                <option value="claude">Claude (Anthropic)</option>
                 <option value="custom">Custom (OpenAI-compatible)</option>
             </select>
         </div>
@@ -351,6 +351,7 @@ const PROVIDERS={
     openai:{url:'https://api.openai.com/v1/chat/completions',models:['gpt-4o-mini','gpt-4o','gpt-4.1-mini']},
     gemini:{url:'https://generativelanguage.googleapis.com/v1beta/models/',models:['gemini-2.0-flash','gemini-2.5-flash','gemini-2.5-pro']},
     mimo:{url:'https://token-plan-sgp.xiaomimimo.com/v1/chat/completions',models:['mimo-v2.5-pro','mimo-v2-flash']},
+    claude:{url:'https://api.anthropic.com/v1/messages',models:['claude-sonnet-4-20250514','claude-haiku-4-20250414','claude-3-5-sonnet-20241022']},
     custom:{url:'',models:['custom']},
 };
 
@@ -520,6 +521,12 @@ async function callAI(prompt){
         if(!r.ok){const e=await r.text();throw new Error(`Gemini ${r.status}: ${e.substring(0,200)}`)}
         const d=await r.json();
         return d.candidates?.[0]?.content?.parts?.[0]?.text||'Không có phản hồi';
+    }
+    if(p==='claude'){
+        const r=await fetch(PROVIDERS.claude.url,{method:'POST',headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01'},body:JSON.stringify({model,messages:[{role:'user',content:prompt}],system:'Bạn là chuyên gia marketing Shopee và TikTok Shop Việt Nam. Viết mô tả sản phẩm tối ưu SEO, cuốn hút, chuyên nghiệp bằng tiếng Việt.',max_tokens:2000})});
+        if(!r.ok){const e=await r.text();throw new Error(`Claude ${r.status}: ${e.substring(0,200)}`)}
+        const d=await r.json();
+        return d.content?.[0]?.text||'Không có phản hồi';
     }
 }
 
