@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🛒 AI Mô Tả Sản Phẩm - Shopee & TikTok Shop</title>
+    <meta name="description" content="Tạo mô tả sản phẩm tối ưu SEO cho Shopee và TikTok Shop bằng AI">
+    <meta name="theme-color" content="#ee4d2d">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛒</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin:0;padding:0;box-sizing:border-box; }
+        :root {
+            --bg:#0f0f13;--bg-card:#18181f;--bg-surface:#222230;
+            --shopee:#ee4d2d;--tiktok:#00f2ea;--tiktok-pink:#ff0050;
+            --accent:#ee4d2d;--accent-glow:rgba(238,77,45,.25);
+            --gold:#f5c518;--text:#eaeaea;--text-muted:#8888a0;
+            --text-dim:#555570;--border:#2a2a3a;--success:#4ade80;
+        }
+        html{scroll-behavior:smooth}
+        body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+
+        /* NAVBAR */
+        .navbar{position:sticky;top:0;z-index:100;background:rgba(15,15,19,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 16px;height:54px;display:flex;align-items:center;justify-content:space-between}
+        .nav-brand{font-weight:800;font-size:18px;display:flex;align-items:center;gap:8px}
+        .nav-brand-shopee{color:var(--shopee)}
+        .nav-brand-tiktok{color:var(--tiktok)}
+        .nav-actions{display:flex;gap:8px}
+        .nav-btn{width:36px;height:36px;border-radius:10px;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-muted);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+        .nav-btn:hover{border-color:var(--accent);color:var(--text)}
+
+        /* LAYOUT */
+        .main{max-width:680px;margin:0 auto;padding:20px 16px 80px}
+
+        /* HERO */
+        .hero{text-align:center;padding:40px 0 30px}
+        .hero-icon{font-size:56px;margin-bottom:12px;animation:bounce 2s ease-in-out infinite}
+        @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+        .hero h1{font-size:28px;font-weight:800;line-height:1.2;margin-bottom:8px}
+        .hero h1 .shopee{color:var(--shopee)}
+        .hero h1 .tiktok{color:var(--tiktok)}
+        .hero p{color:var(--text-muted);font-size:14px;line-height:1.6;max-width:420px;margin:0 auto}
+
+        /* PLATFORM TABS */
+        .platform-tabs{display:flex;gap:8px;margin-bottom:20px}
+        .platform-tab{flex:1;padding:12px;border-radius:12px;border:2px solid var(--border);background:var(--bg-card);text-align:center;cursor:pointer;transition:all .2s;font-weight:600;font-size:14px}
+        .platform-tab:hover{border-color:var(--text-muted)}
+        .platform-tab.active-shopee{border-color:var(--shopee);background:rgba(238,77,45,.08);color:var(--shopee)}
+        .platform-tab.active-tiktok{border-color:var(--tiktok);background:rgba(0,242,234,.08);color:var(--tiktok)}
+        .platform-tab-icon{font-size:24px;margin-bottom:4px}
+
+        /* FORM */
+        .form-card{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:24px 20px;margin-bottom:16px}
+        .form-card-title{font-weight:700;font-size:15px;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+        .form-group{margin-bottom:14px}
+        .form-label{display:block;font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+        .form-input,.form-select,.form-textarea{width:100%;padding:11px 14px;background:var(--bg-surface);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Inter',sans-serif;font-size:14px;outline:none;transition:border-color .2s}
+        .form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--accent)}
+        .form-textarea{resize:vertical;min-height:80px}
+        .form-select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%238888a0' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+        .form-select option{background:var(--bg-card);color:var(--text)}
+        .form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+        .form-hint{font-size:11px;color:var(--text-dim);margin-top:4px}
+
+        /* TONE CHIPS */
+        .tone-chips{display:flex;flex-wrap:wrap;gap:8px}
+        .tone-chip{padding:8px 14px;border-radius:20px;border:1px solid var(--border);background:var(--bg-surface);font-size:13px;cursor:pointer;transition:all .2s}
+        .tone-chip:hover{border-color:var(--accent)}
+        .tone-chip.active{background:var(--accent);border-color:var(--accent);color:white}
+
+        /* BUTTON */
+        .btn-generate{width:100%;padding:16px;border:none;border-radius:14px;font-family:'Inter',sans-serif;font-size:16px;font-weight:700;cursor:pointer;transition:all .3s;display:flex;align-items:center;justify-content:center;gap:10px}
+        .btn-shopee{background:linear-gradient(135deg,var(--shopee),#d4401f);color:white;box-shadow:0 4px 20px var(--accent-glow)}
+        .btn-tiktok{background:linear-gradient(135deg,var(--tiktok-pink),#cc0040);color:white;box-shadow:0 4px 20px rgba(255,0,80,.25)}
+        .btn-generate:hover{transform:translateY(-2px)}
+        .btn-generate:disabled{opacity:.5;cursor:not-allowed;transform:none}
+
+        /* OUTPUT */
+        .output-section{display:none}
+        .output-card{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:14px;position:relative}
+        .output-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+        .output-card-title{font-weight:700;font-size:14px;display:flex;align-items:center;gap:6px}
+        .copy-btn{padding:6px 12px;border-radius:8px;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-muted);font-size:12px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:4px}
+        .copy-btn:hover{border-color:var(--accent);color:var(--text)}
+        .copy-btn.copied{border-color:var(--success);color:var(--success)}
+        .output-text{font-size:14px;line-height:1.7;color:var(--text);white-space:pre-wrap;word-break:break-word}
+        .output-text .highlight{background:rgba(238,77,45,.15);color:var(--shopee);padding:1px 4px;border-radius:4px}
+        .output-char-count{font-size:11px;color:var(--text-dim);text-align:right;margin-top:8px}
+
+        /* KEYWORD TAGS */
+        .keyword-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+        .keyword-tag{padding:4px 10px;border-radius:6px;font-size:12px;font-weight:500}
+        .keyword-tag.primary{background:rgba(238,77,45,.15);color:var(--shopee)}
+        .keyword-tag.secondary{background:rgba(0,242,234,.1);color:var(--tiktok)}
+
+        /* LOADING */
+        .loading{display:none;align-items:center;justify-content:center;gap:10px;padding:40px;color:var(--text-muted)}
+        .loading.active{display:flex}
+        .loading-spinner{width:24px;height:24px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
+        @keyframes spin{to{transform:rotate(360deg)}}
+
+        /* HISTORY */
+        .history-section{margin-top:40px}
+        .history-title{font-weight:700;font-size:15px;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+        .history-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;cursor:pointer;transition:all .2s}
+        .history-card:hover{border-color:var(--accent)}
+        .history-card-title{font-weight:600;font-size:13px;margin-bottom:4px}
+        .history-card-meta{font-size:11px;color:var(--text-muted)}
+        .empty-state{text-align:center;padding:40px;color:var(--text-muted);font-size:14px}
+
+        /* TOAST */
+        .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--bg-surface);border:1px solid var(--border);border-radius:12px;padding:12px 20px;font-size:13px;z-index:300;transition:transform .3s;box-shadow:0 8px 30px rgba(0,0,0,.3)}
+        .toast.show{transform:translateX(-50%) translateY(0)}
+
+        /* SETTINGS MODAL */
+        .modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
+        .modal-overlay.active{display:flex}
+        .modal{background:var(--bg-card);border:1px solid var(--border);border-radius:18px;padding:28px 20px;max-width:440px;width:100%;max-height:80vh;overflow-y:auto;position:relative}
+        .modal-title{font-size:20px;font-weight:700;margin-bottom:18px;text-align:center}
+        .modal-close{position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:8px;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-muted);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+
+        @media(max-width:400px){.hero h1{font-size:22px}.form-row{grid-template-columns:1fr}}
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <div class="nav-brand">🛒 <span class="nav-brand-shopee">Shopee</span> & <span class="nav-brand-tiktok">TikTok</span></div>
+    <div class="nav-actions">
+        <button class="nav-btn" onclick="showHistory()" title="Lịch sử">📋</button>
+        <button class="nav-btn" onclick="showSettings()" title="Cài đặt API">⚙️</button>
+    </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+    <!-- HERO -->
+    <div class="hero">
+        <div class="hero-icon">✍️</div>
+        <h1>AI Mô Tả <span class="shopee">Sản Phẩm</span></h1>
+        <p>Tạo mô tả sản phẩm tối ưu SEO cho Shopee & TikTok Shop bằng AI. Chỉ cần nhập thông tin, AI sẽ viết hộ bạn!</p>
+    </div>
+
+    <!-- PLATFORM -->
+    <div class="platform-tabs">
+        <div class="platform-tab active-shopee" id="tabShopee" onclick="selectPlatform('shopee')">
+            <div class="platform-tab-icon">🛍️</div>
+            Shopee
+        </div>
+        <div class="platform-tab" id="tabTiktok" onclick="selectPlatform('tiktok')">
+            <div class="platform-tab-icon">🎵</div>
+            TikTok Shop
+        </div>
+    </div>
+
+    <!-- FORM -->
+    <div class="form-card">
+        <div class="form-card-title">📦 Thông tin sản phẩm</div>
+        <div class="form-group">
+            <label class="form-label">Tên sản phẩm *</label>
+            <input class="form-input" id="productName" placeholder="VD: Áo thun unisex form rộng cotton 100%">
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label">Danh mục</label>
+                <select class="form-select" id="category">
+                    <option value="thoi-trang-nam">Thời trang nam</option>
+                    <option value="thoi-trang-nu">Thời trang nữ</option>
+                    <option value="giay-dep">Giày dép</option>
+                    <option value="tui-xach">Túi xách</option>
+                    <option value="my-phẩm">Mỹ phẩm</option>
+                    <option value="do-gia-dung">Đồ gia dụng</option>
+                    <option value="do-dien-tu">Đồ điện tử</option>
+                    <option value="do-an">Đồ ăn</option>
+                    <option value="do-choi">Đồ chơi</option>
+                    <option value="sach-van-phong">Sách & Văn phòng phẩm</option>
+                    <option value="the-thao">Thể thao</option>
+                    <option value="me-be">Mẹ & Bé</option>
+                    <option value="khac">Khác</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Giá bán</label>
+                <input class="form-input" id="price" placeholder="VD: 199.000đ">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Đặc điểm nổi bật</label>
+            <textarea class="form-textarea" id="features" placeholder="VD: Chất cotton 100%, form rộng thoải mái, có 5 màu, size S-XXL, freeship toàn quốc"></textarea>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Đối tượng khách hàng</label>
+            <input class="form-input" id="target" placeholder="VD: Nam nữ 18-30, thích phong cách basic">
+        </div>
+    </div>
+
+    <div class="form-card">
+        <div class="form-card-title">🎨 Giọng văn</div>
+        <div class="tone-chips">
+            <div class="tone-chip active" data-tone="ban-chay" onclick="selectTone(this)">🔥 Bán chạy</div>
+            <div class="tone-chip" data-tone="nhe-nhang" onclick="selectTone(this)">😊 Nhẹ nhàng</div>
+            <div class="tone-chip" data-tone="chuyen-nghiep" onclick="selectTone(this)">💼 Chuyên nghiệp</div>
+            <div class="tone-chip" data-tone="gen-z" onclick="selectTone(this)">😎 Gen Z</div>
+            <div class="tone-chip" data-tone="sang-trong" onclick="selectTone(this)">✨ Sang trọng</div>
+            <div class="tone-chip" data-tone="hai-huoc" onclick="selectTone(this)">😂 Hài hước</div>
+        </div>
+    </div>
+
+    <button class="btn-generate btn-shopee" id="btnGenerate" onclick="generate()">
+        ✨ Tạo mô tả sản phẩm
+    </button>
+
+    <!-- LOADING -->
+    <div class="loading" id="loading">
+        <div class="loading-spinner"></div>
+        <span>AI đang viết mô tả...</span>
+    </div>
+
+    <!-- OUTPUT -->
+    <div class="output-section" id="output">
+        <!-- Title suggestion -->
+        <div class="output-card">
+            <div class="output-card-header">
+                <div class="output-card-title">📌 Tiêu đề tối ưu SEO</div>
+                <button class="copy-btn" onclick="copyText('outputTitle', this)">📋 Copy</button>
+            </div>
+            <div class="output-text" id="outputTitle"></div>
+            <div class="output-char-count" id="titleCharCount"></div>
+        </div>
+
+        <!-- Short desc -->
+        <div class="output-card">
+            <div class="output-card-header">
+                <div class="output-card-title">📝 Mô tả ngắn <span style="font-weight:400;font-size:11px;color:var(--text-dim)" id="shortDescLabel">(Shopee)</span></div>
+                <button class="copy-btn" onclick="copyText('outputShort', this)">📋 Copy</button>
+            </div>
+            <div class="output-text" id="outputShort"></div>
+            <div class="output-char-count" id="shortCharCount"></div>
+        </div>
+
+        <!-- Long desc -->
+        <div class="output-card">
+            <div class="output-card-header">
+                <div class="output-card-title">📄 Mô tả đầy đủ</div>
+                <button class="copy-btn" onclick="copyText('outputLong', this)">📋 Copy</button>
+            </div>
+            <div class="output-text" id="outputLong"></div>
+            <div class="output-char-count" id="longCharCount"></div>
+        </div>
+
+        <!-- Keywords -->
+        <div class="output-card">
+            <div class="output-card-header">
+                <div class="output-card-title">🔑 Từ khóa SEO</div>
+                <button class="copy-btn" onclick="copyKeywords(this)">📋 Copy all</button>
+            </div>
+            <div class="keyword-tags" id="outputKeywords"></div>
+        </div>
+
+        <!-- Copy All -->
+        <button class="btn-generate btn-shopee" id="btnCopyAll" onclick="copyAll()" style="background:var(--bg-surface);border:1px solid var(--border);color:var(--text);box-shadow:none;font-size:14px;padding:12px">
+            📋 Copy tất cả
+        </button>
+    </div>
+
+    <!-- HISTORY -->
+    <div class="history-section" id="historySection" style="display:none">
+        <div class="history-title">📋 Lịch sử tạo mô tả</div>
+        <div id="historyList"></div>
+    </div>
+
+</div>
+
+<!-- SETTINGS MODAL -->
+<div class="modal-overlay" id="settingsModal">
+    <div class="modal">
+        <button class="modal-close" onclick="closeSettings()">✕</button>
+        <div class="modal-title">⚙️ Cài đặt AI</div>
+        <div class="form-group">
+            <label class="form-label">🤖 AI Provider</label>
+            <select class="form-select" id="aiProvider" onchange="updateModels()">
+                <option value="openai">OpenAI (GPT-4o-mini)</option>
+                <option value="gemini">Google Gemini</option>
+                <option value="mimo">Xiaomi MiMo</option>
+                <option value="custom">Custom (OpenAI-compatible)</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="form-label">🔑 API Key</label>
+            <input class="form-input" id="apiKey" type="password" placeholder="sk-... hoặc AIza...">
+        </div>
+        <div class="form-group" id="customUrlGroup" style="display:none">
+            <label class="form-label">🌐 Custom API URL</label>
+            <input class="form-input" id="customUrl" placeholder="https://api.example.com/v1/chat/completions">
+        </div>
+        <div class="form-group">
+            <label class="form-label">🎯 Model</label>
+            <select class="form-select" id="aiModel"></select>
+        </div>
+        <button class="btn-generate btn-shopee" onclick="saveSettings()" style="font-size:14px;padding:12px;margin-top:8px">💾 Lưu cài đặt</button>
+        <div style="text-align:center;margin-top:10px;font-size:11px;color:var(--text-dim)">API key chỉ lưu trên trình duyệt của bạn.</div>
+    </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// HTTPS
+if(location.protocol!=='https:'&&location.hostname!=='localhost'&&location.hostname!=='127.0.0.1')location.replace('https://'+location.host+location.pathname);
+
+// XSS protection
+function escapeHtml(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
+
+// CONFIG
+const PROVIDERS={
+    openai:{url:'https://api.openai.com/v1/chat/completions',models:['gpt-4o-mini','gpt-4o','gpt-4.1-mini']},
+    gemini:{url:'https://generativelanguage.googleapis.com/v1beta/models/',models:['gemini-2.0-flash','gemini-2.5-flash','gemini-2.5-pro']},
+    mimo:{url:'https://api.xiaomi.com/v1/chat/completions',models:['mimo-v2.5-pro','mimo-v2-flash']},
+    custom:{url:'',models:['custom']},
+};
+
+// STATE
+let platform='shopee';
+let selectedTone='ban-chay';
+let settings={};
+let history=[];
+
+// STORAGE
+function loadSettings(){try{settings=JSON.parse(localStorage.getItem('shopeeAI_settings')||'{}')}catch{settings={}}}
+function saveSettingsStorage(){localStorage.setItem('shopeeAI_settings',JSON.stringify(settings))}
+function loadHistory(){try{return JSON.parse(localStorage.getItem('shopeeAI_history')||'[]')}catch{return[]}}
+function saveHistory(h){localStorage.setItem('shopeeAI_history',JSON.stringify(h.slice(0,50)))}
+
+// INIT
+function init(){
+    loadSettings();
+    history=loadHistory();
+    updateModels();
+    if(settings.model)document.getElementById('aiModel').value=settings.model;
+    if(settings.apiKey)document.getElementById('apiKey').value=settings.apiKey;
+    if(settings.provider)document.getElementById('aiProvider').value=settings.provider;
+    updateBtnStyle();
+}
+
+// PLATFORM
+function selectPlatform(p){
+    platform=p;
+    document.getElementById('tabShopee').className='platform-tab'+(p==='shopee'?' active-shopee':'');
+    document.getElementById('tabTiktok').className='platform-tab'+(p==='tiktok'?' active-tiktok':'');
+    document.getElementById('shortDescLabel').textContent=p==='shopee'?'(Shopee)':'(TikTok)';
+    updateBtnStyle();
+}
+function updateBtnStyle(){
+    const btn=document.getElementById('btnGenerate');
+    btn.className='btn-generate '+(platform==='shopee'?'btn-shopee':'btn-tiktok');
+}
+
+// TONE
+function selectTone(el){
+    document.querySelectorAll('.tone-chip').forEach(c=>c.classList.remove('active'));
+    el.classList.add('active');
+    selectedTone=el.dataset.tone;
+}
+
+// SETTINGS
+function showSettings(){document.getElementById('settingsModal').classList.add('active')}
+function closeSettings(){document.getElementById('settingsModal').classList.remove('active')}
+function updateModels(){
+    const p=document.getElementById('aiProvider').value;
+    const m=document.getElementById('aiModel');
+    m.innerHTML=PROVIDERS[p].models.map(x=>`<option value="${x}">${x}</option>`).join('');
+    document.getElementById('customUrlGroup').style.display=p==='custom'?'block':'none';
+}
+function saveSettings(){
+    settings.provider=document.getElementById('aiProvider').value;
+    settings.apiKey=document.getElementById('apiKey').value;
+    settings.model=document.getElementById('aiModel').value;
+    settings.customUrl=document.getElementById('customUrl').value;
+    saveSettingsStorage();
+    showToast('✅ Đã lưu cài đặt!');
+    closeSettings();
+}
+
+// HISTORY
+function showHistory(){
+    const sec=document.getElementById('historySection');
+    sec.style.display=sec.style.display==='none'?'block':'none';
+    renderHistory();
+}
+function renderHistory(){
+    history=loadHistory();
+    const list=document.getElementById('historyList');
+    if(!history.length){list.innerHTML='<div class="empty-state">Chưa có lịch sử</div>';return}
+    list.innerHTML=history.map((h,i)=>`<div class="history-card" onclick="loadFromHistory(${i})">
+        <div class="history-card-title">${escapeHtml(h.name)}</div>
+        <div class="history-card-meta">${h.platform==='shopee'?'🛍️ Shopee':'🎵 TikTok'} · ${h.tone} · ${new Date(h.time).toLocaleDateString('vi-VN')}</div>
+    </div>`).join('');
+}
+function loadFromHistory(i){
+    const h=history[i];if(!h)return;
+    showOutput(h.result);
+    showToast('📋 Đã tải từ lịch sử');
+}
+
+// AI CALL
+async function callAI(prompt){
+    const p=settings.provider||'openai';
+    const key=settings.apiKey;
+    const model=settings.model||'gpt-4o-mini';
+    if(!key)throw new Error('Chưa cài đặt API key! Bấm ⚙️ để cài đặt.');
+
+    if(p==='openai'||p==='mimo'||p==='custom'){
+        const url=p==='custom'?settings.customUrl:PROVIDERS[p].url;
+        const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${key}`},body:JSON.stringify({model,messages:[{role:'system',content:'Bạn là chuyên gia marketing Shopee và TikTok Shop Việt Nam. Viết mô tả sản phẩm tối ưu SEO, cuốn hút, chuyên nghiệp bằng tiếng Việt.'},{role:'user',content:prompt}],temperature:0.8,max_tokens:2000})});
+        if(!r.ok){const e=await r.text();throw new Error(`API ${r.status}: ${e.substring(0,200)}`)}
+        const d=await r.json();
+        return d.choices?.[0]?.message?.content||'Không có phản hồi';
+    }
+    if(p==='gemini'){
+        const url=`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`;
+        const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{temperature:0.8,maxOutputTokens:2000}})});
+        if(!r.ok){const e=await r.text();throw new Error(`Gemini ${r.status}: ${e.substring(0,200)}`)}
+        const d=await r.json();
+        return d.candidates?.[0]?.content?.parts?.[0]?.text||'Không có phản hồi';
+    }
+}
+
+// GENERATE
+async function generate(){
+    const name=document.getElementById('productName').value.trim();
+    if(!name){showToast('⚠️ Nhập tên sản phẩm!');return}
+    if(!settings.apiKey){showToast('⚠️ Cài đặt API key trước!');showSettings();return}
+
+    const cat=document.getElementById('category').value;
+    const price=document.getElementById('price').value;
+    const features=document.getElementById('features').value;
+    const target=document.getElementById('target').value;
+    const toneMap={'ban-chay':'bán chạy, tạo FOMO','nhe-nhang':'nhẹ nhàng, thân thiện','chuyen-nghiep':'chuyên nghiệp, đáng tin','gen-z':'gen Z, trendy, dùng slang','sang-trong':'sang trọng, cao cấp','hai-huoc':'hài hước, dí dỏm'};
+
+    const prompt=`Tạo mô tả sản phẩm cho ${platform==='shopee'?'Shopee':'TikTok Shop'}:
+
+Tên sản phẩm: ${name}
+Danh mục: ${cat}
+${price?'Giá: '+price:''}
+${features?'Đặc điểm: '+features:''}
+${target?'Đối tượng: '+target:''}
+Giọng văn: ${toneMap[selectedTone]}
+
+PLATFORM: ${platform}
+
+YÊU CẦU BẮT BUỘC:
+1. TIÊU ĐỀ (dòng đầu): Tên sản phẩm + từ khóa SEO chính. ${platform==='shopee'?'Tối đa 120 ký tự':'Tối đa 34 ký tự'}.
+2. MÔ TẢ NGẮN: ${platform==='shopee'?'3-5 bullet points nêu lợi ích chính':'Hook đầu tiên thu hút, ngắn gọn 1-2 câu'}.
+3. MÔ TẢ ĐẦY ĐỦ: ${platform==='shopee'?'Chi tiết sản phẩm, bảng size, chính sách, 500-800 ký tự':'Script video 15-30s, có hook + CTA'}.
+4. TỪ KHÓA SEO: Liệt kê 8-10 từ khóa liên quan, phân cách bằng dấu phẩy.
+
+FORMAT OUTPUT (bắt buộc):
+[TITLE]
+(tiêu đề)
+
+[SHORT]
+(mô tả ngắn)
+
+[LONG]
+(mô tả đầy đủ)
+
+[KEYWORDS]
+(từ khóa)
+
+Viết bằng tiếng Việt. Không giải thích.`;
+
+    document.getElementById('loading').classList.add('active');
+    document.getElementById('output').style.display='none';
+
+    try{
+        const result=await callAI(prompt);
+        const parsed=parseResult(result);
+        showOutput(parsed);
+
+        // Save history
+        history.unshift({name,platform,tone:selectedTone,time:Date.now(),result:parsed});
+        saveHistory(history);
+        showToast('✅ Tạo mô tả thành công!');
+    }catch(err){
+        showToast('❌ '+err.message);
+    }finally{
+        document.getElementById('loading').classList.remove('active');
+    }
+}
+
+function parseResult(text){
+    const r={title:'',short:'',long:'',keywords:''};
+    let m;
+    m=text.match(/\[TITLE\]\s*\n([\s\S]*?)(?=\[SHORT\]|$)/i);if(m)r.title=m[1].trim();
+    m=text.match(/\[SHORT\]\s*\n([\s\S]*?)(?=\[LONG\]|$)/i);if(m)r.short=m[1].trim();
+    m=text.match(/\[LONG\]\s*\n([\s\S]*?)(?=\[KEYWORDS\]|$)/i);if(m)r.long=m[1].trim();
+    m=text.match(/\[KEYWORDS\]\s*\n([\s\S]*?)$/i);if(m)r.keywords=m[1].trim();
+    // Fallback
+    if(!r.title&&!r.short&&!r.long){
+        const lines=text.split('\n').filter(l=>l.trim());
+        r.title=lines[0]||text.substring(0,120);
+        r.short=lines.slice(1,6).join('\n');
+        r.long=lines.slice(6).join('\n');
+    }
+    return r;
+}
+
+function showOutput(r){
+    document.getElementById('output').style.display='block';
+    document.getElementById('outputTitle').textContent=r.title;
+    document.getElementById('outputShort').textContent=r.short;
+    document.getElementById('outputLong').textContent=r.long;
+    document.getElementById('titleCharCount').textContent=r.title.length+' ký tự';
+    document.getElementById('shortCharCount').textContent=r.short.length+' ký tự';
+    document.getElementById('longCharCount').textContent=r.long.length+' ký tự';
+
+    // Keywords
+    const kw=r.keywords.split(/[,，\n]/).map(k=>k.trim()).filter(Boolean);
+    const kwHtml=kw.map((k,i)=>`<span class="keyword-tag ${i<5?'primary':'secondary'}">${escapeHtml(k)}</span>`).join('');
+    document.getElementById('outputKeywords').innerHTML=kwHtml;
+
+    document.getElementById('output').scrollIntoView({behavior:'smooth'});
+}
+
+// COPY
+function copyText(id,btn){
+    const text=document.getElementById(id).textContent;
+    navigator.clipboard.writeText(text).then(()=>{
+        btn.classList.add('copied');btn.textContent='✅ Copied!';
+        setTimeout(()=>{btn.classList.remove('copied');btn.textContent='📋 Copy'},2000);
+    });
+}
+function copyKeywords(btn){
+    const kws=[...document.querySelectorAll('.keyword-tag')].map(e=>e.textContent).join(', ');
+    navigator.clipboard.writeText(kws).then(()=>{
+        btn.classList.add('copied');btn.textContent='✅ Copied!';
+        setTimeout(()=>{btn.classList.remove('copied');btn.textContent='📋 Copy all'},2000);
+    });
+}
+function copyAll(){
+    const t=document.getElementById('outputTitle').textContent;
+    const s=document.getElementById('outputShort').textContent;
+    const l=document.getElementById('outputLong').textContent;
+    const kws=[...document.querySelectorAll('.keyword-tag')].map(e=>e.textContent).join(', ');
+    const all=`${t}\n\n${s}\n\n${l}\n\nTừ khóa: ${kws}`;
+    navigator.clipboard.writeText(all).then(()=>showToast('📋 Đã copy tất cả!'));
+}
+
+// TOAST
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000)}
+
+init();
+</script>
+</body>
+</html>
